@@ -52,3 +52,21 @@ C++ Code ──> Compiler (Ex: GNU, clang etc)
                                 │
                                 └──> Compiler doesn't create the binary 
                                      and tells all the errors.
+
+
+Interpreted Languages
+Pure interpreted languages exist for example: Bash.  These are those languages, which execute our code directly, without reading / analysing the whole code prior. They execute code line by line, if any line has an error, then everything before it gets properly executed and the moment we detect the first error, execution stops.  If there is more code, after the error, nothing is executed post we encounter the error. 
+
+
+echo "hello world"
+ls -l
+excho 'hello world"";
+echo "hello world"
+
+# [Running] bash "/Users/sanketsingh/Developer/Javascript-Intermediate/Scopes/test.sh"
+# hello world
+# total 0
+# -rw-r--r- 1 sanketsingh staff 0 11 Jul 20:37 README.md
+# drwxr-xr-x 3 sanketsingh staff 96 11 Jul 21:32 Scopes
+# /Users/sanketsingh/Developer/Javascript-Intermediate/Scopes/test.sh: line 5: unexpected EOF while looking for matching
+# /Users/sanketsingh/Developer/Javascript-Intermediate/Scopes/test.sh: line 8: syntax error: unexpected end of file
