@@ -1,0 +1,69 @@
+
+# JavaScript Prototypes: Comprehensive Study Notes
+
+## 1. Class-Based Blueprints vs. JavaScript's Live Linking
+In traditional Object-Oriented Programming (OOP) languages like Java or C++, a **class acts as a pure blueprint**. When you instantiate an object, a copy of that blueprint is made. Consequently, if you modify the class later, it does not affect any previously created objects.
+In JavaScript, however, modifying a class or a constructor function directly alters or expands the capabilities of previously created objects. This behavior is why many developers state that **JavaScript is not strictly "object-oriented," but rather an "Object Linked to Other Objects" (OLOO) language.** The driving mechanism behind this unique behavior is the **Prototype**
+.
+## 2. What is a Prototype?
+A **Prototype** is the built-in mechanism in JavaScript that allows objects to share properties and methods with one another.
+For example, if we create a plain object x = {} and call x.toString(), it returns "[object Object]". Even though we never explicitly defined a toString method inside our object x, we can still access it. This works because JavaScript looks up the method along the object's prototype chain.
+
+## 3. The Under-the-Hood Internal Setup
+JavaScript automatically handles a great deal of object setup behind the scenes.
+
+ * **The Built-in Object Function:** JavaScript automatically sets up a global constructor function named Object.
+ * **The Anonymous Prototype Object:** Alongside this function, JavaScript creates a special, unnamed companion object containing native implementations of fundamental methods like toString(), isPrototypeOf(), and valueOf().
+ * **Accessing the Companion Object:** Because this companion object does not have a distinct name, it is accessed via the property: Object.prototype.
+ * **The Circular Link:** This companion object features a built-in function called a constructor. If you call Object.prototype.constructor, it points right back to the original Object function.
+```javascript
+// Accessing the companion object
+console.log(Object.prototype); 
+// Output: {toString: ƒ, valueOf: ƒ, hasOwnProperty: ƒ, …}
+
+// Accessing the constructor
+console.log(Object.prototype.constructor); 
+// Output: ƒ Object() { [native code] }
+
+```
+## 4. Custom Code Setup (Functions and Classes)
+
+The exact same internal behavior occurs when we define our own functions or classes:
+### Using a Function:
+When we create a custom function, JavaScript automatically creates a companion prototype object for it.
+```javascript
+function Product() {}
+
+console.log(Product.prototype); 
+// Output: { constructor: ƒ Product() }
+
+```
+### Using a Class:
+When using ES6 classes, any methods defined inside the class are automatically assigned to that companion prototype object.
+```javascript
+class Product {
+    display() {}
+}
+
+console.log(Product.prototype);
+// Output: { display: ƒ, constructor: class Product }
+
+```
+Just like the native setup, Product.prototype.constructor points directly back to our original Product class or function.
+
+## 5. Linking and Property Sharing
+In addition to setting up these pairs, JavaScript automatically handles the **linking** between them:
+ 1. **Prototype to Prototype:** Product.prototype is hiddenly linked directly to Object.prototype.
+ 2. **Object to Prototype:** When you instantiate a new instance using the new keyword (e.g., p = new Product()), JavaScript does three things:
+   * It creates a new, plain object.
+   * It binds the this keyword to this newly created object.
+   * It establishes a **hidden link** (internally known as [[Prototype]] or __proto__) between the new object p and Product.prototype.
+
+### How Property Resolution Works (The Prototype Chain)
+When you attempt to access a property or method on an object (e.g., p.toString()), JavaScript performs a sequential look-up:
+ 1. It first checks if the method exists directly on the local object p.
+ 2. If it is not found locally, it travels up the hidden link to check **Product.prototype** (where it would find display()).
+ 3. If it is still not found, it travels up another level to check **Object.prototype** (where it finally finds and executes toString()).
+ 4. If it reaches the end of the chain (Object.prototype.__proto__, which is null) without finding the property, it returns undefined.
+This chain of live connections, also demonstrated across multi-level inheritance hierarchies (like movie inheriting from events in **image_916a73.png**), ensures that objects do not need to hold duplicates of every method. Instead, they efficiently **share** functionality through live references.
+
